@@ -1,6 +1,6 @@
 angular
     .module("socially")
-    .controller("PartiesListCtrl", function ($scope, $meteor, $rootScope, $state, $modal) {
+    .controller("PartiesListCtrl", function ($scope, $meteor, $rootScope, $state, $mdDialog) {
         $scope.parties = $meteor.collection(function () {
             return Parties.find({}, {
                 sort: $scope.getReactively('sort')
@@ -152,21 +152,23 @@ angular
         };
 
         $scope.openAddNewPartyModal = function () {
-            var modalInstance = $modal.open({
-                animation: true,
-                templateUrl: 'client/parties/views/add-new-party-modal.ng.html',
+            $mdDialog.show({
                 controller: 'AddNewPartyCtrl',
+                templateUrl: 'client/parties/views/add-new-party-modal.ng.html',
+                clickOutsideToClose: true,
                 resolve: {
                     parties: function () {
                         return $scope.parties;
                     }
                 }
-            });
-
-            modalInstance.result.then(function () {
-            }, function () {
-            });
+            })
+                .then(function (answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                }, function () {
+                    $scope.status = 'You cancelled the dialog.';
+                });
         };
+
         $scope.isRSVP = function (rsvp, party) {
             if (!$rootScope.currentUser._id) return false;
             var rsvpIndex = party.myRsvpIndex;

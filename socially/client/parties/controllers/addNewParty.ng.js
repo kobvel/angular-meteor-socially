@@ -1,18 +1,15 @@
-angular
-    .module("socially")
-    .controller("AddNewPartyCtrl", [
-        '$scope',
-        '$meteor',
-        '$rootScope',
-        '$state',
-        '$modalInstance',
-        'parties',
-        function ($scope, $meteor, $rootScope, $state, $modalInstance, parties) {
-
-            $scope.addNewParty = function () {
+angular.module("socially").controller("AddNewPartyCtrl", ['$scope', '$meteor', '$rootScope', '$state', '$mdDialog', 'parties',
+    function ($scope, $meteor, $rootScope, $state, $mdDialog, parties) {
+        $scope.newParty = {};
+        $scope.addNewParty = function () {
+            if ($scope.newParty.name) {
                 $scope.newParty.owner = $rootScope.currentUser._id;
                 parties.push($scope.newParty);
                 $scope.newParty = '';
-                $modalInstance.close();
+                $mdDialog.hide();
             }
-        }]);
+        }
+        $scope.close = function () {
+            $mdDialog.hide();
+        }
+    }]);
