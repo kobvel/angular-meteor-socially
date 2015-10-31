@@ -28,3 +28,6 @@ tmeasday:publish-counts
 check
 email
 angularui:angular-google-maps
+twbs:bootstrap
+less
+angularui:angular-ui-bootstrap
