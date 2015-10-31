@@ -10,8 +10,8 @@ angular
         $scope.page = 1;
         $scope.perPage = 3;
         $scope.sort = {name: 1};
-        
-        $scope.$meteorSubscribe('users');
+
+        $scope.users = $meteor.collection(Meteor.users, false).subscribe('users');
 
         $meteor.autorun($scope, function () {
             $meteor.subscribe('parties', {
@@ -46,6 +46,24 @@ angular
 
             return owner;
         };
+
+        $scope.rsvp = function (partyId, rsvp) {
+            $meteor.call('rsvp', partyId, rsvp).then(
+                function (data) {
+                    console.log('success responding', data);
+                },
+                function (err) {
+                    console.log('failed', err);
+                }
+            );
+        };
+
+        $scope.outstandingInvitations = function (party) {
+            return _.filter($scope.users, function (user) {
+                return (_.contains(party.invited, user._id) && !_.findWhere(party.rsvps, {user: user._id}));
+            });
+        };
+
 
         $scope.remove = function (party) {
             $scope.parties.splice($scope.parties.indexOf(party), 1);
