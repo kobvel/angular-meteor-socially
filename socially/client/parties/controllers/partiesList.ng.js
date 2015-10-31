@@ -1,6 +1,6 @@
 angular
     .module("socially")
-    .controller("PartiesListCtrl", function ($scope, $meteor, $rootScope) {
+    .controller("PartiesListCtrl", function ($scope, $meteor, $rootScope, $state) {
         $scope.parties = $meteor.collection(function () {
             return Parties.find({}, {
                 sort: $scope.getReactively('sort')
@@ -22,6 +22,21 @@ angular
                 $scope.partiesCount = $meteor.object(Counts, 'numberOfParties', false);
             });
         });
+
+        $scope.parties.forEach(function (party) {
+            party.onClicked = function () {
+                $state.go('partyDetails', {partyId: party._id});
+            };
+        });
+
+        $scope.map = {
+            center: {
+                latitude: 45,
+                longitude: -73
+            },
+            zoom: 8
+        };
+
 
         $scope.$watch('orderProperty', function () {
             if ($scope.orderProperty)
